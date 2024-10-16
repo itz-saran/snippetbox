@@ -49,7 +49,7 @@ func (m *SnippetModel) Get(id int) (*Snippet, error) {
 	}
 	// TODO use functions instead of extra variable
 	s.ContentHTML = template.HTML(strings.ReplaceAll(s.Content, "\\n", "<br>"))
-	fmt.Println(s)
+	fmt.Println(s.ContentHTML)
 	return s, nil
 }
 

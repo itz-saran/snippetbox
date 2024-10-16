@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -15,28 +14,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		app.serverError(w, err)
 	}
-	for _, v := range snippets {
-		fmt.Fprintf(w, "%+v\n", v)
-	}
-	// files := []string{
-	// 	"./ui/html/base.templ",
-	// 	"./ui/html/partials/nav.templ",
-	// 	"./ui/html/pages/home.templ",
-	// }
-	// ts, err := template.ParseFiles(files...)
 
-	// if err != nil {
-	// 	app.errorLog.Println(err.Error())
-	// 	app.serverError(w, err)
-	// 	return
-	// }
-
-	// err = ts.ExecuteTemplate(w, "base", nil)
-
-	// if err != nil {
-	// 	app.errorLog.Println(err.Error())
-	// 	app.serverError(w, err)
-	// }
+	app.render(w, http.StatusOK, "home.templ", &templateData{
+		Snippets: snippets,
+	})
 }
 
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
@@ -56,20 +37,9 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files := []string{
-		"./ui/html/base.templ",
-		"./ui/html/partials/nav.templ",
-		"./ui/html/pages/view.templ",
-	}
-
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err)
-	}
-	err = ts.ExecuteTemplate(w, "base", snippet)
-	if err != nil {
-		app.serverError(w, err)
-	}
+	app.render(w, http.StatusOK, "view.templ", &templateData{
+		Snippet: snippet,
+	})
 }
 
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
