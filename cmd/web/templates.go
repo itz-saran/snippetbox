@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"snippetbox.saran.net/internal/models"
@@ -18,8 +19,13 @@ func humanDate(t time.Time) string {
 	return t.Format("02 Jan 2006 at 15:04")
 }
 
+func replaceNewLine(str string) template.HTML {
+	return template.HTML(strings.ReplaceAll(str, "\\n", "<br>"))
+}
+
 var functions = template.FuncMap{
-	"humanDate": humanDate,
+	"humanDate":      humanDate,
+	"replaceNewLine": replaceNewLine,
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {

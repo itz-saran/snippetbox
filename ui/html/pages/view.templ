@@ -7,10 +7,10 @@
 		<strong>{{.Title}}</strong>
 		<span>#{{.ID}}</span>
 	</div>
-	<pre><code>{{.ContentHTML}}</code></pre>
+	<pre><code>{{.Content | replaceNewLine}}</code></pre>
 	<div class="metadata">
-		<time>Created: {{humanDate .CreatedAt}}</time>
-		<time>Expires: {{humanDate .ExpiresAt}}</time>
+		<time>Created: {{.CreatedAt | humanDate}}</time>
+		<time>Expires: {{.ExpiresAt | humanDate}}</time>
 	</div>
 	{{ end }}
 </div>

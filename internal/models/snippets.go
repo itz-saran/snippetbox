@@ -3,21 +3,17 @@ package models
 import (
 	"database/sql"
 	"errors"
-	"fmt"
-	"html/template"
-	"strings"
 	"time"
 
 	"github.com/lib/pq"
 )
 
 type Snippet struct {
-	ID          int
-	Title       string
-	Content     string
-	ContentHTML template.HTML
-	CreatedAt   time.Time
-	ExpiresAt   time.Time
+	ID        int
+	Title     string
+	Content   string
+	CreatedAt time.Time
+	ExpiresAt time.Time
 }
 
 type SnippetModel struct {
@@ -47,9 +43,6 @@ func (m *SnippetModel) Get(id int) (*Snippet, error) {
 			return nil, err
 		}
 	}
-	// TODO use functions instead of extra variable
-	s.ContentHTML = template.HTML(strings.ReplaceAll(s.Content, "\\n", "<br>"))
-	fmt.Println(s.ContentHTML)
 	return s, nil
 }
 
