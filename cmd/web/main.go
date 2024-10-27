@@ -38,9 +38,10 @@ func main() {
 		templateCache: templateCache,
 	}
 
+	middlewares := CreateStack(app.recoverPanic, app.logRequest, secureHeaders)
 	server := &http.Server{
 		Addr:     *addr,
-		Handler:  app.routes(),
+		Handler:  middlewares(app.routes()),
 		ErrorLog: errorLog,
 	}
 	infoLog.Printf("Listening on port %s\n", *addr)
