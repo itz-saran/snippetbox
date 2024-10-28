@@ -51,3 +51,7 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w, r, fmt.Sprintf("/snippet/view?id=%d", id), http.StatusSeeOther)
 }
+
+func (app *application) snippetCreateForm(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Form for creating snippet"))
+}
