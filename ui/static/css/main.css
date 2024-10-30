@@ -221,7 +221,7 @@ nav a.live:after {
 }
 
 a.button,
-input[type="submit"] {
+input[type="submit"], button[type="submit"] {
 	background-color: #62cb31;
 	border-radius: 3px;
 	color: #ffffff;
@@ -233,7 +233,7 @@ input[type="submit"] {
 }
 
 a.button:hover,
-input[type="submit"]:hover {
+input[type="submit"]:hover, button[type="submit"]:hover {
 	background-color: #4eb722;
 	color: #ffffff;
 	cursor: pointer;
@@ -272,16 +272,17 @@ textarea {
 form label {
 	display: inline-block;
 	margin-bottom: 9px;
+	cursor: pointer;
 }
 
 .error {
-	color: #c0392b;
+	color: #da1c5c;
 	font-weight: bold;
 	display: block;
 }
 
-.error + textarea,
-.error + input {
+textarea:has(+.error),
+input:has(+.error){
 	border-color: #c0392b !important;
 	border-width: 2px !important;
 }
@@ -398,4 +399,8 @@ footer {
 	height: 60px;
 	color: #6a6c6f;
 	text-align: center;
+}
+
+input[type="radio"] {
+	vertical-align: middle;
 }
