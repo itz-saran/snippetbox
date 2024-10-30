@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
-	"unicode/utf8"
 
 	"snippetbox.saran.net/internal/models"
+	"snippetbox.saran.net/internal/validator"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -44,42 +43,25 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 }
 
 type snippetCreateFormData struct {
-	Title       string
-	Content     string
-	Expires     int
-	FieldErrors map[string]string
+	Title               string `form:"title"`
+	Content             string `form:"content"`
+	Expires             int    `form:"expires"`
+	validator.Validator `form:"-"`
 }
 
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
+	var form snippetCreateFormData
+	err := app.decodePostForm(r, &form)
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
 		return
-	}
-	expiresIn, err := strconv.Atoi(r.PostForm.Get("expires"))
-	if err != nil {
-		app.clientError(w, http.StatusBadRequest)
-		return
-	}
-	form := &snippetCreateFormData{
-		Title:       r.PostForm.Get("title"),
-		Content:     r.PostForm.Get("content"),
-		Expires:     expiresIn,
-		FieldErrors: map[string]string{},
 	}
 	// Validations
-	if strings.TrimSpace(form.Title) == "" {
-		form.FieldErrors["title"] = "Title cannot be empty"
-	} else if utf8.RuneCountInString(form.Title) > 100 {
-		form.FieldErrors["title"] = "Title cannot exceed 100 characters"
-	}
-	if strings.TrimSpace(form.Content) == "" {
-		form.FieldErrors["content"] = "Content cannot be empty"
-	}
-	if form.Expires != 1 && form.Expires != 7 && form.Expires != 365 {
-		form.FieldErrors["expires"] = "Expires must be one of the above values"
-	}
-	if len(form.FieldErrors) > 0 {
+	form.CheckField(validator.NotBlank(form.Title), "title", "Title cannot be empty")
+	form.CheckField(validator.MaxChars(form.Title, 100), "title", "Title cannot exceed 100 characters")
+	form.CheckField(validator.NotBlank(form.Content), "content", "Content cannot be empty")
+	form.CheckField(validator.PermittedValues(form.Expires, 1, 7, 365), "expires", "Expires must be one of the above values")
+	if !form.Valid() {
 		data := app.newTemplateData(r)
 		data.Form = form
 		app.render(w, http.StatusUnprocessableEntity, "create.templ", data)
