@@ -70,7 +70,9 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 	id, err := app.snippets.Insert(form.Title, form.Content, form.Expires)
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
+	app.sessionManager.Put(r.Context(), "flash", "Snippet successfully created")
 	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
 }
 

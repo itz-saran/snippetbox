@@ -7,14 +7,17 @@ import (
 
 func (app *application) routes() *http.ServeMux {
 	mux := http.NewServeMux()
+	manageSession := func(handler func(http.ResponseWriter, *http.Request)) http.Handler {
+		return app.sessionManager.LoadAndSave(http.HandlerFunc(handler))
+	}
 	fileServer := http.FileServer(&neuteredFileSystem{fs: http.Dir("./ui/static/")})
 
 	mux.Handle("/static", http.NotFoundHandler())
 	mux.Handle("/static/", http.StripPrefix("/static/", fileServer))
-	mux.HandleFunc("/{$}", app.home)
-	mux.HandleFunc("GET /snippet/view/{id}", app.snippetView)
-	mux.HandleFunc("GET /snippet/create", app.snippetCreateForm)
-	mux.HandleFunc("POST /snippet/create", app.snippetCreate)
+	mux.Handle("/{$}", manageSession(app.home))
+	mux.Handle("GET /snippet/view/{id}", manageSession(app.snippetView))
+	mux.Handle("GET /snippet/create", manageSession(app.snippetCreateForm))
+	mux.Handle("POST /snippet/create", manageSession(app.snippetCreate))
 
 	return mux
 }
