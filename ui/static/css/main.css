@@ -221,7 +221,8 @@ nav a.live:after {
 }
 
 a.button,
-input[type="submit"], button[type="submit"] {
+input[type="submit"], 
+button:not(.noBackground)[type="submit"] {
 	background-color: #62cb31;
 	border-radius: 3px;
 	color: #ffffff;
