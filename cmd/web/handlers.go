@@ -10,7 +10,7 @@ import (
 	"snippetbox.saran.net/internal/validator"
 )
 
-const UserSessionId = "authenticatedUserID"
+const userSessionId = "authenticatedUserID"
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	snippets, err := app.snippets.Latest()
@@ -185,7 +185,7 @@ func (app *application) UserLogin(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
-	app.sessionManager.Put(r.Context(), UserSessionId, id)
+	app.sessionManager.Put(r.Context(), userSessionId, id)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -195,7 +195,7 @@ func (app *application) UserLogout(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
-	app.sessionManager.Remove(r.Context(), UserSessionId)
+	app.sessionManager.Remove(r.Context(), userSessionId)
 	app.sessionManager.Put(r.Context(), "flash", "You've been logged out successfully.")
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

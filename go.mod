@@ -11,4 +11,6 @@ require (
 
 require golang.org/x/crypto v0.29.0
 
+require github.com/justinas/nosurf v1.1.1
+
 replace snippetbox.saran.net => ./
