@@ -12,7 +12,7 @@ func (app *application) routes() *http.ServeMux {
 	fileServer := http.FileServer(&neuteredFileSystem{fs: http.FS(ui.Files)})
 
 	mux.Handle("/static", http.NotFoundHandler())
-	mux.Handle("/static/*filepath", fileServer)
+	mux.Handle("/static/", fileServer)
 
 	defaultMiddleware := CreateStack(app.manageSession, noSurf, app.authenticate)
 
